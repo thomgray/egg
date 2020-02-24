@@ -39,15 +39,19 @@ mainloop:
 }
 
 func (app *Application) handleEvent(e *Event) {
-	app.eventDelegate(e)
-	if e.Mouse != nil {
-		app.handleMouseEvent(e.Mouse)
-	} else if e.Key != nil {
-		app.handleKeyEvent(e.Key)
-	} else if e.Resize != nil {
-		app.handleResizeEvent(e.Resize)
-	} else if e.Error != nil {
-		app.running = false
+	if app.eventDelegate != nil {
+		app.eventDelegate(e)
+	}
+	if !e.StopPropagation {
+		if e.Mouse != nil {
+			app.handleMouseEvent(e.Mouse)
+		} else if e.Key != nil {
+			app.handleKeyEvent(e.Key)
+		} else if e.Resize != nil {
+			app.handleResizeEvent(e.Resize)
+		} else if e.Error != nil {
+			app.running = false
+		}
 	}
 }
 
@@ -60,7 +64,7 @@ func (app *Application) handleKeyEvent(ke *KeyEvent) {
 		app.running = false
 	} else {
 		app.keyEventHandler(ke)
-		if app.focusedView != nil {
+		if app.focusedView != nil && !ke.StopPropagation {
 			app.focusedView.ReceiveKeyEvent(ke)
 		}
 	}

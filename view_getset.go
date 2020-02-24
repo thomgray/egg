@@ -90,18 +90,22 @@ func (v *View) SetAttributes(atts ...Attribute) {
 	v.attribute = a
 }
 
+// OnDraw -
 func (v *View) OnDraw(f func(c Canvas)) {
 	v.drawHandler = f
 }
 
+// OnKeyEvent -
 func (v *View) OnKeyEvent(f func(*KeyEvent)) {
 	v.keyEventHandler = f
 }
 
+// OnMouseEvent -
 func (v *View) OnMouseEvent(f func(*MouseEvent)) {
 	v.mouseEventHandler = f
 }
 
+// OnBoundsSet -
 func (v *View) OnBoundsSet(f func(old, new Bounds)) {
 	v.boundsUpdateHandler = f
 }

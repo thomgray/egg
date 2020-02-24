@@ -1,6 +1,8 @@
 package egg
 
 import (
+	"unicode/utf8"
+
 	"github.com/nsf/termbox-go"
 )
 
@@ -25,8 +27,12 @@ func (c Canvas) DrawRune2(r rune, x, y int) {
 
 // DrawString - draw a string at the specified relative point
 func (c Canvas) DrawString(s string, x, y int, fg, bg Color, attr Attribute) {
-	for i, r := range s {
-		c.DrawRune(r, x+i, y, fg, bg, attr)
+	bytes := []byte(s)
+	for len(bytes) > 0 {
+		r, w := utf8.DecodeRune(bytes)
+		bytes = bytes[w:]
+		c.DrawRune(r, x, y, fg, bg, attr)
+		x++
 	}
 }
 

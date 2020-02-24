@@ -5,6 +5,11 @@ func (app *Application) ExitOnSigInt(b bool) {
 	app.exitOnSigInt = b
 }
 
+// SetEventDelegate ...
+func (app *Application) SetEventDelegate(handler func(*Event)) {
+	app.eventDelegate = handler
+}
+
 // OnKeyEvent - set the key event handler for the application
 func (app *Application) OnKeyEvent(handler func(*KeyEvent)) {
 	if handler != nil {
@@ -43,4 +48,10 @@ func (app *Application) SetAttribute(atts ...Attribute) {
 		a |= att
 	}
 	app.view.attribute = a
+}
+
+// SetFocusedView ...
+func (app *Application) SetFocusedView(v *View) {
+	app.focusedView = v
+	// trigger focus change event?
 }

@@ -1,2 +1,2 @@
 test:
-	go test . ./controller ./model
+	go test . ./eggc ./model

@@ -36,8 +36,13 @@ func pollEvent() *Event {
 	return &e
 }
 
+type BasicEvent struct {
+	StopPropagation bool
+}
+
 // Event - contains a specific event or error
 type Event struct {
+	BasicEvent
 	Mouse  *MouseEvent
 	Key    *KeyEvent
 	Resize *ResizeEvent
@@ -46,12 +51,14 @@ type Event struct {
 
 // MouseEvent - a nouse event
 type MouseEvent struct {
+	BasicEvent
 	MouseX int
 	MouseY int
 }
 
 // KeyEvent - a key event
 type KeyEvent struct {
+	BasicEvent
 	Char rune
 	Mod  Modifier
 	Key  Key
@@ -59,6 +66,7 @@ type KeyEvent struct {
 
 // ResizeEvent - a resize event
 type ResizeEvent struct {
+	BasicEvent
 	Width  int
 	Height int
 }

@@ -1,6 +1,7 @@
 package eggc
 
 import (
+	"strings"
 	"unicode/utf8"
 
 	"github.com/thomgray/egg"
@@ -48,26 +49,35 @@ func (lv *LabelView) GetView() *egg.View {
 	return lv.View
 }
 
+// GetLabel -
+func (lv *LabelView) GetLabel() string {
+	return string(lv.label)
+}
+
 func (lv *LabelView) draw(c egg.Canvas) {
 	bounds := lv.View.GetBounds()
-	x := 0
-	y := 0
-	stringLen := utf8.RuneCountInString(string(lv.label))
+	labelStr := string(lv.label)
+	labelLines := strings.Split(labelStr, "\n")
 
-	switch lv.alignment.h {
-	case AlignedCenterHorizontal:
-		x = (bounds.Width - stringLen) / 2
-		if x < 0 {
-			x = 0
-		}
-	case AlignedRight:
-		x = bounds.Width - stringLen
-	}
+	stringLines := len(labelLines)
+	y := 0
 	switch lv.alignment.v {
 	case AlignedCenterVertical:
-		y = (bounds.Height / 2)
+		y = (bounds.Height + stringLines/2)
 	case AlignedBottom:
-		y = bounds.Height
+		y = bounds.Height - stringLines
 	}
-	c.DrawString2(string(lv.label), x, y)
+
+	for _, s := range labelLines {
+		x := 0
+		lineLength := utf8.RuneCountInString(s)
+		switch lv.alignment.h {
+		case AlignedCenterHorizontal:
+			x = (bounds.Width + lineLength) / 2
+		case AlignedRight:
+			x = bounds.Width - lineLength
+		}
+		c.DrawString2(s, x, y)
+		y++
+	}
 }
