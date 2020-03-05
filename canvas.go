@@ -9,6 +9,7 @@ import (
 // Canvas ...
 type Canvas struct {
 	Bounds
+	ViewPort   *Bounds
 	Foreground Color
 	Background Color
 	Attribute  Attribute
@@ -16,8 +17,15 @@ type Canvas struct {
 
 // DrawRune - draw a rune at the specified relative point
 func (c Canvas) DrawRune(r rune, x, y int, fg, bg Color, attr Attribute) {
+	absx := c.X + x
+	absy := c.Y + y
+
+	if c.ViewPort != nil && !c.ViewPort.Contains(absx, absy) {
+		return
+	}
+
 	fgAtts := termbox.Attribute(fg) | termbox.Attribute(attr)
-	termbox.SetCell(c.X+x, c.Y+y, r, fgAtts, termbox.Attribute(bg))
+	termbox.SetCell(absx, absy, r, fgAtts, termbox.Attribute(bg))
 }
 
 // DrawRune2 - draw rune at the specified point with the canvas attributes
@@ -41,6 +49,18 @@ func (c Canvas) DrawString2(s string, x, y int) {
 	c.DrawString(s, x, y, c.Foreground, c.Background, c.Attribute)
 }
 
+// DrawAttributedString -
+func (c Canvas) DrawAttributedString(s AttributedString, x, y int, fg, bg Color, attr Attribute) {
+	bytes := []byte(s.str)
+	for len(bytes) > 0 {
+		r, w := utf8.DecodeRune(bytes)
+		attsPlus := s.GetAttributesAt(x)
+		bytes = bytes[w:]
+		c.DrawRune(r, x, y, fg, bg, attr|attsPlus)
+		x++
+	}
+}
+
 // DrawCursor - draw the cursor at the specified x/y.
 func (c Canvas) DrawCursor(x, y int) {
 	termbox.SetCursor(c.X+x, c.Y+y)
@@ -49,6 +69,16 @@ func (c Canvas) DrawCursor(x, y int) {
 func makeCanvas(bounds Bounds, fg, bg Color, atts Attribute) Canvas {
 	return Canvas{
 		Bounds:     bounds,
+		Foreground: fg,
+		Background: bg,
+		Attribute:  atts,
+	}
+}
+
+func makeCanvasWithViewPort(bounds Bounds, viewport *Bounds, fg, bg Color, atts Attribute) Canvas {
+	return Canvas{
+		Bounds:     bounds,
+		ViewPort:   viewport,
 		Foreground: fg,
 		Background: bg,
 		Attribute:  atts,

@@ -1,6 +1,8 @@
 package egg
 
 import (
+	"sync"
+
 	"github.com/nsf/termbox-go"
 )
 
@@ -16,6 +18,8 @@ type Application struct {
 	resizeEventHandler func(*ResizeEvent)
 	running            bool
 	focusedView        *View
+	redrawDebouncer    *Debouncer
+	mux                sync.Mutex
 }
 
 // Stop ...
@@ -41,6 +45,10 @@ mainloop:
 func (app *Application) handleEvent(e *Event) {
 	if app.eventDelegate != nil {
 		app.eventDelegate(e)
+	}
+	// even if propagation stopped, always resize the main app view
+	if e.Resize != nil {
+		app.view.SetBounds(MakeBounds(0, 0, e.Resize.Width, e.Resize.Height))
 	}
 	if !e.StopPropagation {
 		if e.Mouse != nil {
@@ -71,7 +79,6 @@ func (app *Application) handleKeyEvent(ke *KeyEvent) {
 }
 
 func (app *Application) handleResizeEvent(re *ResizeEvent) {
-	app.view.SetBounds(MakeBounds(0, 0, re.Width, re.Height))
 	app.resizeEventHandler(re)
 }
 
@@ -87,7 +94,18 @@ func (app *Application) AddViewController(vc ViewController) {
 
 // ReDraw ...
 func (app *Application) ReDraw() {
+	app.redrawDebouncer.Send(true)
+	// termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
+	// termbox.HideCursor()
+	// app.view.redraw()
+	// termbox.Flush()
+}
+
+func (app *Application) redrawBebounced(b []interface{}) {
+	app.mux.Lock()
 	termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
+	termbox.HideCursor()
 	app.view.redraw()
 	termbox.Flush()
+	app.mux.Unlock()
 }

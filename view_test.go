@@ -11,6 +11,9 @@ func TestMakeView(t *testing.T) {
 
 	assert.True(t, v1.focusable)
 	assert.Equal(t, []*View{}, v1.subViews)
+	assert.True(t, v1.IsFocusable())
+	assert.True(t, v1.IsVisible())
+	assert.False(t, v1.IsTransparent())
 }
 
 func TestAddSubview(t *testing.T) {
@@ -21,6 +24,13 @@ func TestAddSubview(t *testing.T) {
 
 	assert.Equal(t, &v2, v1.subViews[0])
 	assert.Equal(t, v1, v2.superView)
+}
+
+func TestInvisibleViewDoesNotDraw(t *testing.T) {
+	v1 := MakeView()
+	v1.SetVisible(false)
+
+	v1.ReDraw()
 }
 
 func TestUnmount(t *testing.T) {

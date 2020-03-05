@@ -14,6 +14,7 @@ func Init() (*Application, error) {
 
 	err := termbox.Init()
 	termbox.SetInputMode(termbox.InputEsc)
+	termbox.SetOutputMode(termbox.Output256)
 	if err != nil {
 		return nil, err
 	}
@@ -22,6 +23,11 @@ func Init() (*Application, error) {
 	}
 
 	baseView.SetFocusable(true)
+	baseView.SetViewport(func(Bounds) *Bounds {
+		return nil
+	})
+	w, h := WindowSize()
+	baseView.SetBounds(MakeBounds(0, 0, w, h))
 	baseView.attribute = 0
 	baseView.foreground = ColorDefault
 	baseView.background = ColorDefault
@@ -36,6 +42,8 @@ func Init() (*Application, error) {
 	_APP.mouseEventHandler = func(*MouseEvent) {}
 	_APP.resizeEventHandler = func(*ResizeEvent) { _APP.ReDraw() }
 	_APP.eventDelegate = func(*Event) {}
+	_APP.redrawDebouncer = MakeDebouncer()
+	_APP.redrawDebouncer.Receive(_APP.redrawBebounced)
 
 	return _APP, nil
 }

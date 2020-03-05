@@ -10,6 +10,11 @@ func (app *Application) SetEventDelegate(handler func(*Event)) {
 	app.eventDelegate = handler
 }
 
+// OnDraw ...
+func (app *Application) OnDraw(d func(Canvas)) {
+	app.view.OnDraw(d)
+}
+
 // OnKeyEvent - set the key event handler for the application
 func (app *Application) OnKeyEvent(handler func(*KeyEvent)) {
 	if handler != nil {
@@ -54,4 +59,9 @@ func (app *Application) SetAttribute(atts ...Attribute) {
 func (app *Application) SetFocusedView(v *View) {
 	app.focusedView = v
 	// trigger focus change event?
+}
+
+// SetFocusedViewController ...
+func (app *Application) SetFocusedViewController(vc ViewController) {
+	app.SetFocusedView(vc.GetView())
 }

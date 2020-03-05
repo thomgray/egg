@@ -18,6 +18,11 @@ type Bounds struct {
 	Size
 }
 
+// Contains - returns if this bounds contains the parameter x/y coordinate
+func (b Bounds) Contains(x, y int) bool {
+	return b.X <= x && b.Y <= y && b.X+b.Width > x && b.Y+b.Height > y
+}
+
 // MakeBounds - construct a bounds with the given x, y coordinates and width/height dimentions
 func MakeBounds(x, y, width, height int) Bounds {
 	return Bounds{

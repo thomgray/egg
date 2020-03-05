@@ -36,6 +36,7 @@ func pollEvent() *Event {
 	return &e
 }
 
+// BasicEvent - fields common to all event types
 type BasicEvent struct {
 	StopPropagation bool
 }
@@ -49,7 +50,7 @@ type Event struct {
 	Error  error
 }
 
-// MouseEvent - a nouse event
+// MouseEvent - a mouse event
 type MouseEvent struct {
 	BasicEvent
 	MouseX int

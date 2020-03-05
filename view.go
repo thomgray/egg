@@ -6,34 +6,33 @@ import (
 
 // View - a component that represents a section of the application's viewport
 type View struct {
+	id                  string
 	bounds              Bounds
 	foreground          Color
 	background          Color
 	attribute           Attribute
 	focusable           bool
+	transparent         bool
+	visible             bool
 	subViews            []*View
 	superView           *View
 	mouseEventHandler   func(*MouseEvent)
 	keyEventHandler     func(*KeyEvent)
 	boundsUpdateHandler func(Bounds, Bounds)
 	drawHandler         func(Canvas)
+	viewportAccessor    func(Bounds) *Bounds
 }
 
 // MakeView - make a new view.
 func MakeView() *View {
 	view := View{}
 	view.focusable = true
+	view.visible = true
+	view.transparent = false
 	view.subViews = make([]*View, 0)
 	view.foreground = ColorDefault
 	view.background = ColorDefault
 	return &view
-}
-
-// Draw - override this to implement custon draw
-func (v *View) Draw(c Canvas) {
-	if v.drawHandler != nil {
-		v.drawHandler(c)
-	}
 }
 
 // ReceiveKeyEvent - bare implementation
@@ -74,8 +73,11 @@ func (v *View) Unmount() {
 
 // AddSubView - add subview to this view
 func (v *View) AddSubView(sv *View) {
-	for _, v := range v.subViews {
-		if v == sv {
+	if sv == nil {
+		return
+	}
+	for _, vw := range v.subViews {
+		if vw == sv {
 			return
 		}
 	}
@@ -116,10 +118,31 @@ func (v *View) getSuperview() *View {
 }
 
 func (v *View) redraw() {
+	if !v.visible {
+		return
+	}
 	bounds := absoluteBounds(v)
-	clearBounds(bounds, v.foreground, v.background)
-	c := makeCanvas(bounds, v.foreground, v.background, v.attribute)
-	v.Draw(c)
+	var viewPort *Bounds = nil
+	if v.superView != nil {
+		sv := v.superView
+		svport := sv.GetViewport()
+		if svport != nil {
+			svb := absoluteBounds2(*svport, sv)
+			viewPort = &svb
+		}
+	}
+	if v.IsTransparent() {
+		// don't clear background
+	} else if viewPort != nil {
+		intersect := intersectionBounds(bounds, *viewPort)
+		clearBounds(intersect, v.foreground, v.background)
+	} else {
+		clearBounds(bounds, v.foreground, v.background)
+	}
+	c := makeCanvasWithViewPort(bounds, viewPort, v.foreground, v.background, v.attribute)
+	if v.drawHandler != nil {
+		v.drawHandler(c)
+	}
 	for _, subv := range v.subViews {
 		subv.redraw()
 	}

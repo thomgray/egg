@@ -47,6 +47,7 @@ func (bv *BorderView) draw(c egg.Canvas) {
 	c.DrawRune2(bv.borderChars.bl, 0, c.Height-1)
 }
 
+// GetView - get the view
 func (bv *BorderView) GetView() *egg.View {
 	return bv.View
 }

@@ -74,7 +74,7 @@ func (tv *TextView) draw(c egg.Canvas) {
 		c.DrawCursor(-1, -1)
 	}
 	for docx, r := range tv.document.GetTextContentNullTerminating() {
-		if docx == cursorDocX && tv.cursorVisible {
+		if docx == cursorDocX && tv.cursorVisible && tv.IsFocused() {
 			c.DrawCursor(curX, curY)
 		}
 		if r == '\n' {

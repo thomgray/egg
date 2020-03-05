@@ -7,10 +7,6 @@ type (
 	Modifier uint8
 	// Key - key
 	Key uint16
-	// Attribute - a format attribute
-	Attribute uint16
-	// Color - color
-	Color uint16
 )
 
 // Mod constants
@@ -99,24 +95,4 @@ const (
 	KeySpace          = Key(termbox.KeySpace)
 	KeyBackspace2     = Key(termbox.KeyBackspace2)
 	KeyCtrl8          = Key(termbox.KeyCtrl8)
-)
-
-// Colour
-const (
-	ColorDefault = Color(termbox.ColorDefault)
-	ColorBlack   = Color(termbox.ColorBlack)
-	ColorRed     = Color(termbox.ColorRed)
-	ColorGreen   = Color(termbox.ColorGreen)
-	ColorYellow  = Color(termbox.ColorYellow)
-	ColorBlue    = Color(termbox.ColorBlue)
-	ColorMagenta = Color(termbox.ColorMagenta)
-	ColorCyan    = Color(termbox.ColorCyan)
-	ColorWhite   = Color(termbox.ColorWhite)
-)
-
-// Attribute
-const (
-	AttrBold      = Attribute(termbox.AttrBold)
-	AttrUnderline = Attribute(termbox.AttrUnderline)
-	AttrReverse   = Attribute(termbox.AttrReverse)
 )
