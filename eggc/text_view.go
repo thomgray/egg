@@ -146,6 +146,16 @@ func (tv *TextView) moveCursorToBeginningOfLine() {
 	}
 }
 
+// GetCursorX - return the current x-offset of the cursor
+func (tv *TextView) GetCursorX() int {
+	return tv.document.GetCursorX()
+}
+
+// SetCursorX - sets the current x-position of the cursor
+func (tv *TextView) SetCursorX(x int) {
+	tv.document.SetCursorX(x)
+}
+
 func (tv *TextView) moveCursorToEndOfLine() {
 	text := tv.document.GetTextContent()
 	cursorx := tv.document.GetCursorX()
