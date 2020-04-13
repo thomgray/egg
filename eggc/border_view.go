@@ -1,11 +1,14 @@
 package eggc
 
-import "github.com/thomgray/egg"
+import (
+	"github.com/thomgray/egg"
+)
 
 // BorderView ...
 type BorderView struct {
 	*egg.View
 	borderChars borderChars
+	title       string
 }
 
 type borderChars struct {
@@ -29,9 +32,15 @@ func (bv *BorderView) SetChars(tl, t, tr, r, br, b, bl, l rune) {
 	}
 }
 
+// SetTitle - set the border tile, or set to a blank string to unset
+func (bv *BorderView) SetTitle(title string) {
+	bv.title = title
+}
+
 func (bv *BorderView) draw(c egg.Canvas) {
 	bWidth := c.Width - 1
 	bHeight := c.Height - 1
+
 	for i := 1; i < bHeight; i++ {
 		c.DrawRune2(bv.borderChars.l, 0, i)
 		c.DrawRune2(bv.borderChars.r, c.Width-1, i)
@@ -45,6 +54,10 @@ func (bv *BorderView) draw(c egg.Canvas) {
 	c.DrawRune2(bv.borderChars.tr, c.Width-1, 0)
 	c.DrawRune2(bv.borderChars.br, c.Width-1, c.Height-1)
 	c.DrawRune2(bv.borderChars.bl, 0, c.Height-1)
+	if bv.title != "" {
+		title := " " + bv.title + " "
+		c.DrawString2(title, 3, 0)
+	}
 }
 
 // GetView - get the view

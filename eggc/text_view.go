@@ -2,13 +2,12 @@ package eggc
 
 import (
 	"github.com/thomgray/egg"
-	"github.com/thomgray/egg/model"
 )
 
 // TextView a view that contains editable text
 type TextView struct {
 	*egg.View
-	document                *model.Document
+	document                *Document
 	alignmentH              AlignmentHorizontal
 	alignmentV              AlignmentVertical
 	cursorVisible           bool
@@ -20,7 +19,7 @@ type TextView struct {
 func MakeTextView() *TextView {
 	tv := TextView{
 		View:                    egg.MakeView(),
-		document:                model.MakeDocument(),
+		document:                MakeDocument(),
 		cursorVisible:           true,
 		showCursorWhenUnfocused: false,
 	}

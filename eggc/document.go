@@ -1,4 +1,4 @@
-package model
+package eggc
 
 // Document - a text model
 type Document struct {
