@@ -52,10 +52,10 @@ func (v *View) GetSubViews() []*View {
 	return v.subViews
 }
 
-// SetViewport - sets the viewport of ths view
-// this would likely depend on the current state of the view, espeically the views current bounds.
-// the function takes the views current bounds (relative to the parent).
-// The viwport bounds should be returned (also relative to the views parent origin)
+// SetViewport - sets the viewport of ths view.
+// This would likely depend on the current state of the view, espeically the views current bounds.
+// The function takes the views current bounds (relative to the parent).
+// The viwport bounds should be returned (also relative to the views parent origin).
 // Returning nil indicates that this view does not constrain its child views to a viewport
 // (This is the default case)
 func (v *View) SetViewport(f func(Bounds) *Bounds) {

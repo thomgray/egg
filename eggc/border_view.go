@@ -22,6 +22,13 @@ func MakeBorderView() *BorderView {
 		borderChars: borderChars{'┏', '━', '┓', '┃', '┛', '━', '┗', '┃'},
 	}
 	bv.OnDraw(bv.draw)
+	bv.SetViewport(func(b egg.Bounds) *egg.Bounds {
+		b.Width -= 2
+		b.Height -= 2
+		b.X++
+		b.Y++
+		return &b
+	})
 	return &bv
 }
 

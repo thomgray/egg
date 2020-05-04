@@ -185,16 +185,6 @@ func (sv *ScrollView) batchReceive(e []interface{}) {
 	} else if v < 0 {
 		sv.ScrollDown(v * -1)
 	}
-	// switch ke.Key {
-	// case egg.KeyArrowLeft:
-	// 	sv.ScrollLeft(1)
-	// case egg.KeyArrowRight:
-	// 	sv.ScrollRight(1)
-	// case egg.KeyArrowUp:
-	// 	sv.ScrollUp(1)
-	// case egg.KeyArrowDown:
-	// 	sv.ScrollDown(1)
-	// }
 }
 
 // ScrollLeft ...
