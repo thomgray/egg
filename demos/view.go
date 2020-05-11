@@ -41,7 +41,11 @@ func drawView(c egg.Canvas) {
 }
 
 func handleResize(e *egg.ResizeEvent) {
-	v.SetSize(e.Width-20, e.Height-20)
+	v.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+		b.Width = e.Width - 20
+		b.Height = e.Height - 20
+		return b
+	})
 	app.ReDraw()
 }
 
