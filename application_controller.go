@@ -1,39 +1,26 @@
 package egg
 
 import (
-	"fmt"
-
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
 // Init ...
 func Init() (*Application, error) {
+	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
+	screen, e := tcell.NewScreen()
+	if e != nil {
+		return nil, e
+	}
+	if e = screen.Init(); e != nil {
+		return nil, e
+	}
+
 	if _APP != nil {
 		panic("Application already initialized")
 	}
 
-	err := termbox.Init()
-	termbox.SetInputMode(termbox.InputEsc)
-	termbox.SetOutputMode(termbox.Output256)
-	if err != nil {
-		return nil, err
-	}
-	baseView := &applicationView{
-		*MakeView(),
-	}
-
-	baseView.SetFocusable(true)
-	baseView.SetViewport(func(Bounds) *Bounds {
-		return nil
-	})
-	w, h := WindowSize()
-	baseView.SetBounds(MakeBounds(0, 0, w, h))
-	baseView.attribute = 0
-	baseView.foreground = ColorDefault
-	baseView.background = ColorDefault
-
 	_APP = &Application{
-		view:         baseView,
+		screen:       screen,
 		exitOnSigInt: true,
 		running:      true,
 		focusedView:  nil,
@@ -45,6 +32,22 @@ func Init() (*Application, error) {
 	_APP.redrawDebouncer = MakeDebouncer()
 	_APP.redrawDebouncer.Receive(_APP.redrawBebounced)
 
+	baseView := &applicationView{
+		*MakeView(),
+	}
+
+	baseView.SetFocusable(true)
+	baseView.SetViewport(func(Bounds) *Bounds {
+		return nil
+	})
+	w, h := _APP.WindowSize()
+	baseView.SetBounds(MakeBounds(0, 0, w, h))
+	baseView.attribute = 0
+	baseView.foreground = ColorDefault
+	baseView.background = ColorDefault
+
+	_APP.view = baseView
+
 	return _APP, nil
 }
 
@@ -52,7 +55,7 @@ func Init() (*Application, error) {
 func InitOrPanic() *Application {
 	var app, err = Init()
 	if err != nil {
-		panic(fmt.Sprintf("There was an error: %s", err))
+		panic(err)
 	} else {
 		return app
 	}

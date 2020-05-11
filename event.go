@@ -1,36 +1,50 @@
 package egg
 
 import (
-	"fmt"
-
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
-func pollEvent() *Event {
-	ev := termbox.PollEvent()
+// func pollEvent() *Event {
+// 	ev := termbox.PollEvent()
 
+// 	e := Event{}
+// 	e.Error = ev.Err
+
+// 	switch ev.Type {
+// 	case termbox.EventMouse:
+// 		e.Mouse = &MouseEvent{
+// 			MouseX: ev.MouseX,
+// 			MouseY: ev.MouseY,
+// 		}
+// 	case termbox.EventKey:
+// 		e.Key = &KeyEvent{
+// 			Char: ev.Ch,
+// 			Mod:  Modifier(ev.Mod),
+// 			Key:  Key(ev.Key),
+// 		}
+// 	case termbox.EventResize:
+// 		e.Resize = &ResizeEvent{
+// 			Width:  ev.Width,
+// 			Height: ev.Height,
+// 		}
+// 	case termbox.EventInterrupt | termbox.EventError:
+// 		e.Error = fmt.Errorf("Event poll failed to to %d", ev.Type)
+// 	}
+
+// 	return &e
+// }
+
+func pollEvent(s tcell.Screen) *Event {
+	ev := s.PollEvent()
 	e := Event{}
-	e.Error = ev.Err
 
-	switch ev.Type {
-	case termbox.EventMouse:
-		e.Mouse = &MouseEvent{
-			MouseX: ev.MouseX,
-			MouseY: ev.MouseY,
-		}
-	case termbox.EventKey:
+	switch ev := ev.(type) {
+	case *tcell.EventKey:
 		e.Key = &KeyEvent{
-			Char: ev.Ch,
-			Mod:  Modifier(ev.Mod),
-			Key:  Key(ev.Key),
+			Char: ev.Rune(),
+			Mod:  Modifier(ev.Modifiers()),
+			Key:  Key(uint16(ev.Key())),
 		}
-	case termbox.EventResize:
-		e.Resize = &ResizeEvent{
-			Width:  ev.Width,
-			Height: ev.Height,
-		}
-	case termbox.EventInterrupt | termbox.EventError:
-		e.Error = fmt.Errorf("Event poll failed to to %d", ev.Type)
 	}
 
 	return &e

@@ -59,8 +59,6 @@ func (iv *InputView) handleKeyEvent(e *egg.KeyEvent) {
 		iv.moveCursorToBeginningOfLine()
 	case egg.KeyEnd:
 		iv.moveCursorToEndOfLine()
-	case egg.KeySpace:
-		iv.insertRune(' ')
 	case egg.KeyEnter:
 		if iv.commandHandler != nil {
 			iv.commandHandler(string(iv.document.GetTextContent()))

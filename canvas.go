@@ -3,7 +3,7 @@ package egg
 import (
 	"unicode/utf8"
 
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
 // Canvas ...
@@ -24,8 +24,10 @@ func (c Canvas) DrawRune(r rune, x, y int, fg, bg Color, attr Attribute) {
 		return
 	}
 
-	fgAtts := termbox.Attribute(fg) | termbox.Attribute(attr)
-	termbox.SetCell(absx, absy, r, fgAtts, termbox.Attribute(bg))
+	s := tcell.StyleDefault
+	s = s.Foreground(tcell.Color(fg))
+	s = s.Background(tcell.Color(bg))
+	_APP.screen.SetContent(absx, absy, r, nil, s)
 }
 
 // DrawRune2 - draw rune at the specified point with the canvas attributes
@@ -63,7 +65,7 @@ func (c Canvas) DrawAttributedString(s AttributedString, x, y int, fg, bg Color,
 
 // DrawCursor - draw the cursor at the specified x/y.
 func (c Canvas) DrawCursor(x, y int) {
-	termbox.SetCursor(c.X+x, c.Y+y)
+	_APP.screen.ShowCursor(c.X+x, c.Y+y)
 }
 
 func makeCanvas(bounds Bounds, fg, bg Color, atts Attribute) Canvas {

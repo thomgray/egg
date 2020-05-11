@@ -1,15 +1,17 @@
 package egg
 
 import (
+	"fmt"
 	"sync"
 
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
 var _APP *Application
 
 // Application ...
 type Application struct {
+	screen             tcell.Screen
 	view               *applicationView
 	exitOnSigInt       bool
 	eventDelegate      func(*Event)
@@ -27,16 +29,21 @@ func (app *Application) Stop() {
 	app.running = false
 }
 
+func (app *Application) WindowSize() (w, h int) {
+	return app.screen.Size()
+}
+
 // Start ...
 func (app *Application) Start() {
 	app.ReDraw()
-	defer termbox.Close()
+	defer app.screen.Fini()
+	fmt.Println("entering main loop")
 mainloop:
 	for {
 		if !app.running {
 			break mainloop
 		} else {
-			e := pollEvent()
+			e := pollEvent(app.screen)
 			app.handleEvent(e)
 		}
 	}
@@ -95,17 +102,12 @@ func (app *Application) AddViewController(vc ViewController) {
 // ReDraw ...
 func (app *Application) ReDraw() {
 	app.redrawDebouncer.Send(true)
-	// termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
-	// termbox.HideCursor()
-	// app.view.redraw()
-	// termbox.Flush()
 }
 
 func (app *Application) redrawBebounced(b []interface{}) {
 	app.mux.Lock()
-	termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
-	termbox.HideCursor()
+	app.screen.Clear()
 	app.view.redraw()
-	termbox.Flush()
+	app.screen.Sync()
 	app.mux.Unlock()
 }

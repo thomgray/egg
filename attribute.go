@@ -1,33 +1,35 @@
 package egg
 
-import "github.com/nsf/termbox-go"
+import (
+	"github.com/gdamore/tcell"
+)
 
 type (
 	// Attribute - a format attribute
-	Attribute uint16
+	Attribute int
 	// Color - color
-	Color uint16
+	Color int16
 )
 
 // Colour
 const (
-	ColorDefault = Color(termbox.ColorDefault)
-	ColorBlack   = Color(termbox.ColorBlack)
-	ColorRed     = Color(termbox.ColorRed)
-	ColorGreen   = Color(termbox.ColorGreen)
-	ColorYellow  = Color(termbox.ColorYellow)
-	ColorBlue    = Color(termbox.ColorBlue)
-	ColorMagenta = Color(termbox.ColorMagenta)
-	ColorCyan    = Color(termbox.ColorCyan)
-	ColorWhite   = Color(termbox.ColorWhite)
+	ColorDefault = Color(tcell.ColorDefault)
+	ColorBlack   = Color(tcell.ColorBlack)
+	ColorRed     = Color(tcell.ColorRed)
+	ColorGreen   = Color(tcell.ColorGreen)
+	ColorYellow  = Color(tcell.ColorYellow)
+	ColorBlue    = Color(tcell.ColorBlue)
+	ColorMagenta = Color(tcell.ColorFuchsia)
+	ColorCyan    = Color(tcell.ColorAqua)
+	ColorWhite   = Color(tcell.ColorWhite)
 )
 
 // Attribute
 const (
 	AttrNormal    = Attribute(0)
-	AttrBold      = Attribute(termbox.AttrBold)
-	AttrUnderline = Attribute(termbox.AttrUnderline)
-	AttrReverse   = Attribute(termbox.AttrReverse)
+	AttrBold      = Attribute(tcell.AttrBold)
+	AttrUnderline = Attribute(tcell.AttrUnderline)
+	AttrReverse   = Attribute(tcell.AttrReverse)
 )
 
 // ColorAnsi - convert an ansi colour value 0-255 to a Color
