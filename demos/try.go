@@ -15,7 +15,7 @@ func main() {
 	}
 
 	app.OnDraw(func(c egg.Canvas) {
-		c.DrawString(fmt.Sprintf("Hello %d", count), 10, 5, egg.ColorBlack, egg.ColorGreen, egg.AttrBold)
+		c.DrawString(fmt.Sprintf("Hello %d", count), 10, 5, egg.ColorRed, egg.ColorWhite, egg.AttrBold)
 	})
 
 	app.OnKeyEvent(func(ke *egg.KeyEvent) {

@@ -94,7 +94,7 @@ func (v *View) IsFocused() bool {
 // ReDraw - re draw this view
 func (v *View) ReDraw() {
 	v.redraw()
-	_APP.screen.Fini() //???
+	_APP.screen.Show() //???
 }
 
 func (v *View) getSubviews() []*View {

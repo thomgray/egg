@@ -1,7 +1,6 @@
 package egg
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/gdamore/tcell"
@@ -14,7 +13,7 @@ type Application struct {
 	screen             tcell.Screen
 	view               *applicationView
 	exitOnSigInt       bool
-	eventDelegate      func(*Event)
+	eventDelegate      func(Event)
 	keyEventHandler    func(*KeyEvent)
 	mouseEventHandler  func(*MouseEvent)
 	resizeEventHandler func(*ResizeEvent)
@@ -37,7 +36,6 @@ func (app *Application) WindowSize() (w, h int) {
 func (app *Application) Start() {
 	app.ReDraw()
 	defer app.screen.Fini()
-	fmt.Println("entering main loop")
 mainloop:
 	for {
 		if !app.running {
@@ -49,24 +47,30 @@ mainloop:
 	}
 }
 
-func (app *Application) handleEvent(e *Event) {
+func (app *Application) handleEvent(e Event) {
+	if e == nil {
+		return
+	}
 	if app.eventDelegate != nil {
 		app.eventDelegate(e)
 	}
+
 	// even if propagation stopped, always resize the main app view
-	if e.Resize != nil {
-		app.view.SetBounds(MakeBounds(0, 0, e.Resize.Width, e.Resize.Height))
+	// if e.Resize != nil {
+	// 	app.view.SetBounds(MakeBounds(0, 0, e.Resize.Width, e.Resize.Height))
+	// }
+	if !e.ShouldPropagate() {
+		return
 	}
-	if !e.StopPropagation {
-		if e.Mouse != nil {
-			app.handleMouseEvent(e.Mouse)
-		} else if e.Key != nil {
-			app.handleKeyEvent(e.Key)
-		} else if e.Resize != nil {
-			app.handleResizeEvent(e.Resize)
-		} else if e.Error != nil {
-			app.running = false
-		}
+
+	switch e := e.(type) {
+	case *KeyEvent:
+		app.handleKeyEvent(e)
+	case *MouseEvent:
+		app.handleMouseEvent(e)
+	case *ResizeEvent:
+		app.handleResizeEvent(e)
+		// error?
 	}
 }
 
@@ -79,7 +83,7 @@ func (app *Application) handleKeyEvent(ke *KeyEvent) {
 		app.running = false
 	} else {
 		app.keyEventHandler(ke)
-		if app.focusedView != nil && !ke.StopPropagation {
+		if app.focusedView != nil && ke.ShouldPropagate() {
 			app.focusedView.ReceiveKeyEvent(ke)
 		}
 	}
@@ -108,6 +112,6 @@ func (app *Application) redrawBebounced(b []interface{}) {
 	app.mux.Lock()
 	app.screen.Clear()
 	app.view.redraw()
-	app.screen.Sync()
+	app.screen.Show()
 	app.mux.Unlock()
 }

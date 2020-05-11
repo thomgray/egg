@@ -79,48 +79,11 @@ func (v *View) SetBounds(bounds Bounds) {
 	v.ReceiveBoundsUpdate(old, v.bounds)
 }
 
-// SetSize - set the size for the view with the existing origin. Note this will trigger am OnBoundsSet event
-func (v *View) SetSize(w, h int) {
-	bounds := v.bounds
-	bounds.Width = w
-	bounds.Height = h
-	v.SetBounds(bounds)
-}
-
-// SetOrigin - set the origin for the view with the existing size. Note this will trigger am OnBoundsSet event
-func (v *View) SetOrigin(x, y int) {
-	bounds := v.bounds
-	bounds.Y = y
-	bounds.X = x
-	v.SetBounds(bounds)
-}
-
-// SetWidth - set the width of the view with the existing origin and height. Note this will trigger am OnBoundsSet event
-func (v *View) SetWidth(w int) {
-	bounds := v.bounds
-	bounds.Width = w
-	v.SetBounds(bounds)
-}
-
-// SetHeight - set the height of the view with the existing origin and width. Note this will trigger am OnBoundsSet event
-func (v *View) SetHeight(h int) {
-	bounds := v.bounds
-	bounds.Height = h
-	v.SetBounds(bounds)
-}
-
-// SetX - set the x origin of the view with the existing size and y origin. Note this will trigger am OnBoundsSet event
-func (v *View) SetX(x int) {
-	bounds := v.bounds
-	bounds.X = x
-	v.SetBounds(bounds)
-}
-
-// SetY - set the y origin of the view with the existing size and x origin. Note this will trigger am OnBoundsSet event
-func (v *View) SetY(y int) {
-	bounds := v.bounds
-	bounds.Y = y
-	v.SetBounds(bounds)
+// UpdateBounds - has the effect of SetBounds, only you provide a function to mutate and return the existing bounds.
+func (v *View) UpdateBounds(updater func(Bounds) Bounds) {
+	old := v.bounds
+	new := updater(old)
+	v.SetBounds(new)
 }
 
 // SetForeground - set the foreground color for the view

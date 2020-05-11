@@ -28,7 +28,7 @@ func Init() (*Application, error) {
 	_APP.keyEventHandler = func(*KeyEvent) {}
 	_APP.mouseEventHandler = func(*MouseEvent) {}
 	_APP.resizeEventHandler = func(*ResizeEvent) { _APP.ReDraw() }
-	_APP.eventDelegate = func(*Event) {}
+	_APP.eventDelegate = func(Event) {}
 	_APP.redrawDebouncer = MakeDebouncer()
 	_APP.redrawDebouncer.Receive(_APP.redrawBebounced)
 

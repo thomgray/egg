@@ -6,7 +6,7 @@ func (app *Application) ExitOnSigInt(b bool) {
 }
 
 // SetEventDelegate ...
-func (app *Application) SetEventDelegate(handler func(*Event)) {
+func (app *Application) SetEventDelegate(handler func(Event)) {
 	app.eventDelegate = handler
 }
 
