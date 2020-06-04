@@ -3,16 +3,17 @@ package egg
 import (
 	"sync"
 
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
 
 var _APP *Application
 
 // Application ...
 type Application struct {
+	screen             tcell.Screen
 	view               *applicationView
 	exitOnSigInt       bool
-	eventDelegate      func(*Event)
+	eventDelegate      func(Event)
 	keyEventHandler    func(*KeyEvent)
 	mouseEventHandler  func(*MouseEvent)
 	resizeEventHandler func(*ResizeEvent)
@@ -27,39 +28,49 @@ func (app *Application) Stop() {
 	app.running = false
 }
 
+func (app *Application) WindowSize() (w, h int) {
+	return app.screen.Size()
+}
+
 // Start ...
 func (app *Application) Start() {
 	app.ReDraw()
-	defer termbox.Close()
+	defer app.screen.Fini()
 mainloop:
 	for {
 		if !app.running {
 			break mainloop
 		} else {
-			e := pollEvent()
+			e := pollEvent(app.screen)
 			app.handleEvent(e)
 		}
 	}
 }
 
-func (app *Application) handleEvent(e *Event) {
+func (app *Application) handleEvent(e Event) {
+	if e == nil {
+		return
+	}
 	if app.eventDelegate != nil {
 		app.eventDelegate(e)
 	}
+
 	// even if propagation stopped, always resize the main app view
-	if e.Resize != nil {
-		app.view.SetBounds(MakeBounds(0, 0, e.Resize.Width, e.Resize.Height))
+	// if e.Resize != nil {
+	// 	app.view.SetBounds(MakeBounds(0, 0, e.Resize.Width, e.Resize.Height))
+	// }
+	if !e.ShouldPropagate() {
+		return
 	}
-	if !e.StopPropagation {
-		if e.Mouse != nil {
-			app.handleMouseEvent(e.Mouse)
-		} else if e.Key != nil {
-			app.handleKeyEvent(e.Key)
-		} else if e.Resize != nil {
-			app.handleResizeEvent(e.Resize)
-		} else if e.Error != nil {
-			app.running = false
-		}
+
+	switch e := e.(type) {
+	case *KeyEvent:
+		app.handleKeyEvent(e)
+	case *MouseEvent:
+		app.handleMouseEvent(e)
+	case *ResizeEvent:
+		app.handleResizeEvent(e)
+		// error?
 	}
 }
 
@@ -72,7 +83,7 @@ func (app *Application) handleKeyEvent(ke *KeyEvent) {
 		app.running = false
 	} else {
 		app.keyEventHandler(ke)
-		if app.focusedView != nil && !ke.StopPropagation {
+		if app.focusedView != nil && ke.ShouldPropagate() {
 			app.focusedView.ReceiveKeyEvent(ke)
 		}
 	}
@@ -95,17 +106,12 @@ func (app *Application) AddViewController(vc ViewController) {
 // ReDraw ...
 func (app *Application) ReDraw() {
 	app.redrawDebouncer.Send(true)
-	// termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
-	// termbox.HideCursor()
-	// app.view.redraw()
-	// termbox.Flush()
 }
 
 func (app *Application) redrawBebounced(b []interface{}) {
 	app.mux.Lock()
-	termbox.Clear(termbox.Attribute(app.view.GetForeground()), termbox.Attribute(app.view.GetBackground()))
-	termbox.HideCursor()
+	app.screen.Clear()
 	app.view.redraw()
-	termbox.Flush()
+	app.screen.Show()
 	app.mux.Unlock()
 }

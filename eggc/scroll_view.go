@@ -207,7 +207,10 @@ func (sv *ScrollView) ScrollLeft(amount int) {
 		return
 	}
 	for _, subv := range sv.GetSubViews() {
-		subv.SetX(subv.GetBounds().X + toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.X += toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()
@@ -236,7 +239,10 @@ func (sv *ScrollView) ScrollRight(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetX(subv.GetBounds().X - toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.X -= toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()
@@ -263,7 +269,10 @@ func (sv *ScrollView) ScrollUp(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetY(subv.GetBounds().Y + toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.Y += toScroll
+			return b
+		})
 	}
 
 	if sv.didScroll != nil {
@@ -293,7 +302,10 @@ func (sv *ScrollView) ScrollDown(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetY(subv.GetBounds().Y - toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.Y -= toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()
