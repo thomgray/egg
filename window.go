@@ -1,22 +1,18 @@
 package egg
 
-import (
-	"github.com/nsf/termbox-go"
-)
-
 // WindowWidth ...
 func WindowWidth() int {
-	w, _ := termbox.Size()
+	w, _ := WindowSize()
 	return w
 }
 
 // WindowHeight ...
 func WindowHeight() int {
-	_, h := termbox.Size()
+	_, h := WindowSize()
 	return h
 }
 
 // WindowSize ...
 func WindowSize() (width int, height int) {
-	return termbox.Size()
+	return _APP.screen.Size()
 }

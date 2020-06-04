@@ -185,16 +185,6 @@ func (sv *ScrollView) batchReceive(e []interface{}) {
 	} else if v < 0 {
 		sv.ScrollDown(v * -1)
 	}
-	// switch ke.Key {
-	// case egg.KeyArrowLeft:
-	// 	sv.ScrollLeft(1)
-	// case egg.KeyArrowRight:
-	// 	sv.ScrollRight(1)
-	// case egg.KeyArrowUp:
-	// 	sv.ScrollUp(1)
-	// case egg.KeyArrowDown:
-	// 	sv.ScrollDown(1)
-	// }
 }
 
 // ScrollLeft ...
@@ -217,7 +207,10 @@ func (sv *ScrollView) ScrollLeft(amount int) {
 		return
 	}
 	for _, subv := range sv.GetSubViews() {
-		subv.SetX(subv.GetBounds().X + toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.X += toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()
@@ -246,7 +239,10 @@ func (sv *ScrollView) ScrollRight(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetX(subv.GetBounds().X - toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.X -= toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()
@@ -273,7 +269,10 @@ func (sv *ScrollView) ScrollUp(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetY(subv.GetBounds().Y + toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.Y += toScroll
+			return b
+		})
 	}
 
 	if sv.didScroll != nil {
@@ -303,7 +302,10 @@ func (sv *ScrollView) ScrollDown(amount int) {
 	}
 
 	for _, subv := range sv.GetSubViews() {
-		subv.SetY(subv.GetBounds().Y - toScroll)
+		subv.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.Y -= toScroll
+			return b
+		})
 	}
 	if sv.didScroll != nil {
 		sv.didScroll()

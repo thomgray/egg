@@ -107,8 +107,6 @@ func (tv *TextView) keyEventHandler(e *egg.KeyEvent) {
 		tv.moveCursorToBeginningOfLine()
 	case egg.KeyEnd:
 		tv.moveCursorToEndOfLine()
-	case egg.KeySpace:
-		tv.insertRune(' ')
 	case egg.KeyEnter:
 		tv.insertRune('\n')
 	default:

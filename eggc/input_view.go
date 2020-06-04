@@ -11,6 +11,8 @@ type InputView struct {
 	suggest           func(string) (string, bool)
 	commandHandler    func(string)
 	currentSuggestion *string
+	prompt            string
+	placeholder       string
 }
 
 func MakeInputView() *InputView {
@@ -19,6 +21,7 @@ func MakeInputView() *InputView {
 	iv.document = MakeDocument()
 	iv.OnKeyEvent(iv.handleKeyEvent)
 	iv.OnDraw(iv.draw)
+	iv.prompt = ""
 
 	return &iv
 }
@@ -27,12 +30,14 @@ func (iv *InputView) GetView() *egg.View {
 	return iv.View
 }
 
-// OnCommandSent - function called with the input string when user hits enter
-func (iv *InputView) OnCommandSent(f func(string)) {
+// OnEnter - provide a function called when user hits enter.
+// The function input string `cmd` is the text content of the input
+func (iv *InputView) OnEnter(f func(cmd string)) {
 	iv.commandHandler = f
 }
 
-// Suggest - given the parameter input, set a tab-completion suggestion
+// Suggest - given the parameter input, set a command suggestion.
+// this suggestion will be set if the user hits tab
 func (iv *InputView) Suggest(f func(string) (string, bool)) {
 	iv.suggest = f
 }
@@ -54,8 +59,6 @@ func (iv *InputView) handleKeyEvent(e *egg.KeyEvent) {
 		iv.moveCursorToBeginningOfLine()
 	case egg.KeyEnd:
 		iv.moveCursorToEndOfLine()
-	case egg.KeySpace:
-		iv.insertRune(' ')
 	case egg.KeyEnter:
 		if iv.commandHandler != nil {
 			iv.commandHandler(string(iv.document.GetTextContent()))
@@ -108,18 +111,40 @@ func (iv *InputView) moveCursorBackwards() {
 }
 
 func (iv *InputView) draw(c egg.Canvas) {
-	c.DrawCursor(iv.document.GetCursorX(), 0)
+	promptLen := runewidth.StringWidth(iv.prompt)
+	c.DrawCursor(iv.document.GetCursorX()+promptLen, 0)
 	content := iv.document.GetTextContent()
-	c.DrawString2(string(content), 0, 0)
+	c.DrawString2(iv.prompt, 0, 0)
+	c.DrawString2(string(content), promptLen, 0)
 	if iv.currentSuggestion != nil {
-		w := len(content)
+		w := runewidth.StringWidth(string(content)) + promptLen
 		c.DrawString(*iv.currentSuggestion, w, 0, egg.ColorBlue, c.Background, c.Attribute)
+	} else if len(content) == 0 {
+		// render placeholder
+		w := promptLen
+		c.DrawString(iv.placeholder, w, 0, egg.ColorYellow, c.Background, c.Attribute)
 	}
 }
 
 // GetTextContent - get the text content of this view as a byte slice
 func (iv *InputView) GetTextContent() []rune {
 	return iv.document.GetTextContent()
+}
+
+// SetPrompt ...
+func (iv *InputView) SetPrompt(s string) {
+	iv.prompt = s
+}
+
+// SetPlaceholder ...
+func (iv *InputView) SetPlaceholder(s string) {
+	iv.placeholder = s
+}
+
+// Clear - clear the input
+func (iv *InputView) Clear() {
+	iv.document.SetCursorX(0)
+	iv.document.SetTextContentString("")
 }
 
 // GetTextContentString - get the text content of this view as a string

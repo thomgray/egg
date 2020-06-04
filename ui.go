@@ -1,18 +1,24 @@
 package egg
 
-import (
-	"github.com/nsf/termbox-go"
-)
+import "github.com/gdamore/tcell"
 
 // SetCursorVisible ...
 func SetCursorVisible(visible bool) {
-	termbox.HideCursor()
+	if visible {
+		_APP.screen.ShowCursor(1, 1) // ??? where does it go?
+	} else {
+		_APP.screen.HideCursor()
+	}
 }
 
 func clearBounds(bounds Bounds, fg, bg Color) {
+	s := tcell.StyleDefault // not reallt - should be based on
+	s = s.Foreground(tcell.Color(fg))
+	s = s.Background(tcell.Color(bg))
+
 	for x := bounds.X; x < bounds.X+bounds.Width; x++ {
 		for y := bounds.Y; y < bounds.Y+bounds.Height; y++ {
-			termbox.SetCell(x, y, '\000', termbox.Attribute(fg), termbox.Attribute(bg))
+			_APP.screen.SetContent(x, y, '\000', nil, s)
 		}
 	}
 }

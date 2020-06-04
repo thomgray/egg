@@ -1,9 +1,5 @@
 package egg
 
-import (
-	"github.com/nsf/termbox-go"
-)
-
 // View - a component that represents a section of the application's viewport
 type View struct {
 	id                  string
@@ -98,7 +94,7 @@ func (v *View) IsFocused() bool {
 // ReDraw - re draw this view
 func (v *View) ReDraw() {
 	v.redraw()
-	termbox.Flush()
+	_APP.screen.Show() //???
 }
 
 func (v *View) getSubviews() []*View {

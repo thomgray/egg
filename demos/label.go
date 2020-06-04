@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/thomgray/egg"
 	"github.com/thomgray/egg/eggc"
 )
@@ -20,6 +23,12 @@ var app *egg.Application
 var labeleggc *eggc.LabelView
 
 func main() {
+	file, err := os.OpenFile("info.log", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.SetOutput(file)
+	defer file.Close()
 	app = egg.InitOrPanic()
 	defer app.Start()
 
@@ -30,47 +39,50 @@ func main() {
 	bv := eggc.MakeBorderView()
 	bv.SetBounds(egg.MakeBounds(10, 10, 11, 3))
 	bv.AddSubView(labeleggc.View)
-	bv.SetForeground(egg.ColorMagenta)
-	bv.SetBackground(egg.ColorBlack)
+	// bv.SetForeground(egg.ColorMagenta)
+	// bv.SetBackground(egg.ColorBlack)
 
 	labeleggc.SetLabel("Hello")
-	labeleggc.SetAlignment(eggc.AlignedCenterHorizontal, eggc.AlignedCenterVertical)
+	// labeleggc.SetAlignment(eggc.AlignedCenterHorizontal, eggc.AlignedCenterVertical)
 
 	bv.OnBoundsSet(func(_, new egg.Bounds) {
-		labeleggc.View.SetSize(new.Width-2, new.Height-2)
+		log.Println("bounbds updated")
+		labeleggc.View.UpdateBounds(func(b egg.Bounds) egg.Bounds {
+			b.Width = new.Width - 2
+			b.Height = new.Height - 2
+			b.X = 1
+			return b
+		})
 	})
 
 	app.AddView(bv.View)
 	app.OnKeyEvent(func(e *egg.KeyEvent) {
+		bounds := bv.View.GetBounds()
 		switch e.Key {
 		case egg.KeyEsc:
 			app.Stop()
 		case egg.KeyArrowLeft:
-			bounds := bv.View.GetBounds()
-			bv.View.SetX(bounds.X - 1)
+			bounds.X--
+			bv.SetBounds(bounds)
 		case egg.KeyArrowRight:
-			bounds := bv.View.GetBounds()
-			bv.View.SetX(bounds.X + 1)
+			bounds.X++
+			bv.SetBounds(bounds)
 		case egg.KeyArrowUp:
-			bounds := bv.View.GetBounds()
-			bv.View.SetY(bounds.Y - 1)
+			bounds.Y--
+			bv.SetBounds(bounds)
 		case egg.KeyArrowDown:
-			bounds := bv.View.GetBounds()
-			bv.View.SetY(bounds.Y + 1)
+			bounds.Y++
+			bv.SetBounds(bounds)
 		}
 
 		switch e.Char {
 		case 'w':
-			bounds := bv.View.GetBounds()
 			bv.View.SetBounds(egg.MakeBounds(bounds.X, bounds.Y, bounds.Width+1, bounds.Height))
 		case 'n':
-			bounds := bv.View.GetBounds()
 			bv.View.SetBounds(egg.MakeBounds(bounds.X, bounds.Y, bounds.Width-1, bounds.Height))
 		case 't':
-			bounds := bv.View.GetBounds()
 			bv.View.SetBounds(egg.MakeBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height+1))
 		case 's':
-			bounds := bv.View.GetBounds()
 			bv.View.SetBounds(egg.MakeBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height-1))
 		}
 		app.ReDraw()

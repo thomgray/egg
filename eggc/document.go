@@ -24,7 +24,6 @@ func (d *Document) GetTextContent() []rune {
 func (d *Document) GetTextContentNullTerminating() []rune {
 	tc := d.GetTextContent()
 	return runeSliceInsert(tc, len(tc), '\000')
-
 }
 
 func (d *Document) SetTextContentString(tc string) {
@@ -44,7 +43,9 @@ func (d *Document) InsertRuneAtCursorIncrementing(r rune) {
 }
 
 func (d *Document) RemoveRuneUnderCursor() {
-	d.textContent = runeSliceRemove(d.textContent, d.curx)
+	if d.curx < len(d.textContent) {
+		d.textContent = runeSliceRemove(d.textContent, d.curx)
+	}
 }
 
 func (d *Document) SetCursorX(x int) {
