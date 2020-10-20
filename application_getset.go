@@ -10,8 +10,18 @@ func (app *Application) SetEventDelegate(handler func(Event)) {
 	app.eventDelegate = handler
 }
 
+// SetState ...
+func (app *Application) SetState(state interface{}) {
+	app.state = state
+}
+
+// GetState ...
+func (app *Application) GetState() interface{} {
+	return app.state
+}
+
 // OnDraw ...
-func (app *Application) OnDraw(d func(Canvas)) {
+func (app *Application) OnDraw(d func(Canvas, State)) {
 	app.view.OnDraw(d)
 }
 
@@ -64,4 +74,9 @@ func (app *Application) SetFocusedView(v *View) {
 // SetFocusedViewController ...
 func (app *Application) SetFocusedViewController(vc ViewController) {
 	app.SetFocusedView(vc.GetView())
+}
+
+// GetSubViews ...
+func (app *Application) GetSubViews() []*View {
+	return app.view.GetSubViews()
 }

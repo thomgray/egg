@@ -1,12 +1,25 @@
 package egg
 
 import (
+	"os"
+
 	"github.com/gdamore/tcell"
 )
+
+var __true_color bool = false
+
+// UseTrueColor - needs to be set before egg.Init otherwise this will be ineffective.
+// default is false
+func UseTrueColor(tc bool) {
+	__true_color = tc
+}
 
 // Init ...
 func Init() (*Application, error) {
 	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
+	if !__true_color {
+		os.Setenv("TCELL_TRUECOLOR", "disable")
+	}
 	screen, e := tcell.NewScreen()
 	if e != nil {
 		return nil, e

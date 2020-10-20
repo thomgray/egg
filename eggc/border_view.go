@@ -44,7 +44,7 @@ func (bv *BorderView) SetTitle(title string) {
 	bv.title = title
 }
 
-func (bv *BorderView) draw(c egg.Canvas) {
+func (bv *BorderView) draw(c egg.Canvas, _ egg.State) {
 	bWidth := c.Width - 1
 	bHeight := c.Height - 1
 
