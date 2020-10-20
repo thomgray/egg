@@ -98,7 +98,7 @@ func (sv *ScrollView) viewport(b egg.Bounds) *egg.Bounds {
 	return &b
 }
 
-func (sv *ScrollView) draw(c egg.Canvas) {
+func (sv *ScrollView) draw(c egg.Canvas, _ egg.State) {
 	bigBounds := sv.subViewUnionBounds()
 	if sv.scrollVertical && sv.drawBarVertical {
 		sv.drawVerticalScrollBar(c, bigBounds)

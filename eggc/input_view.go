@@ -110,7 +110,7 @@ func (iv *InputView) moveCursorBackwards() {
 	iv.document.SetCursorX(iv.document.GetCursorX() - 1)
 }
 
-func (iv *InputView) draw(c egg.Canvas) {
+func (iv *InputView) draw(c egg.Canvas, _ egg.State) {
 	promptLen := runewidth.StringWidth(iv.prompt)
 	c.DrawCursor(iv.document.GetCursorX()+promptLen, 0)
 	content := iv.document.GetTextContent()

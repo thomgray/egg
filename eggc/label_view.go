@@ -54,7 +54,7 @@ func (lv *LabelView) GetLabel() string {
 	return string(lv.label)
 }
 
-func (lv *LabelView) draw(c egg.Canvas) {
+func (lv *LabelView) draw(c egg.Canvas, _ egg.State) {
 	bounds := lv.View.GetBounds()
 	labelStr := string(lv.label)
 	labelLines := strings.Split(labelStr, "\n")

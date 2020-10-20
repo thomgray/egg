@@ -21,6 +21,7 @@ type Application struct {
 	focusedView        *View
 	redrawDebouncer    *Debouncer
 	mux                sync.Mutex
+	state              interface{}
 }
 
 // Stop ...

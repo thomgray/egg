@@ -14,14 +14,24 @@ type (
 // Colour
 const (
 	ColorDefault = Color(tcell.ColorDefault)
-	ColorBlack   = Color(tcell.ColorBlack)
-	ColorRed     = Color(tcell.ColorRed)
-	ColorGreen   = Color(tcell.ColorGreen)
-	ColorYellow  = Color(tcell.ColorYellow)
-	ColorBlue    = Color(tcell.ColorBlue)
-	ColorMagenta = Color(tcell.ColorFuchsia)
-	ColorCyan    = Color(tcell.ColorAqua)
-	ColorWhite   = Color(tcell.ColorWhite)
+
+	ColorBlack   = Color(0)
+	ColorRed     = Color(1)
+	ColorGreen   = Color(2)
+	ColorYellow  = Color(3)
+	ColorBlue    = Color(4)
+	ColorMagenta = Color(5)
+	ColorCyan    = Color(6)
+	ColorWhite   = Color(7)
+
+	ColorBrightBlack   = Color(8)
+	ColorBrightRed     = Color(9)
+	ColorBrightGreen   = Color(10)
+	ColorBrightYellow  = Color(11)
+	ColorBrightBlue    = Color(12)
+	ColorBrightMagenta = Color(13)
+	ColorBrightCyan    = Color(14)
+	ColorBrightWhite   = Color(15)
 )
 
 // Attribute

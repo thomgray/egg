@@ -14,7 +14,7 @@ func main() {
 		panic(err)
 	}
 
-	app.OnDraw(func(c egg.Canvas) {
+	app.OnDraw(func(c egg.Canvas, _ egg.State) {
 		c.DrawString(fmt.Sprintf("Hello %d", count), 10, 5, egg.ColorRed, egg.ColorWhite, egg.AttrBold)
 	})
 
