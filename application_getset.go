@@ -12,12 +12,12 @@ func (app *Application) SetEventDelegate(handler func(Event)) {
 
 // SetState ...
 func (app *Application) SetState(state interface{}) {
-	app.state = state
+	app.view.state = state
 }
 
 // GetState ...
 func (app *Application) GetState() interface{} {
-	return app.state
+	return app.view.state
 }
 
 // OnDraw ...
