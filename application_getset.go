@@ -10,18 +10,8 @@ func (app *Application) SetEventDelegate(handler func(Event)) {
 	app.eventDelegate = handler
 }
 
-// SetState ...
-func (app *Application) SetState(state interface{}) {
-	app.view.state = state
-}
-
-// GetState ...
-func (app *Application) GetState() interface{} {
-	return app.view.state
-}
-
 // OnDraw ...
-func (app *Application) OnDraw(d func(Canvas, State)) {
+func (app *Application) OnDraw(d func(Canvas)) {
 	app.view.OnDraw(d)
 }
 

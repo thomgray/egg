@@ -1,12 +1,8 @@
 package egg
 
-// State - can be anything
-type State interface{}
-
 // View - a component that represents a section of the application's viewport
 type View struct {
 	id                  string
-	state               State
 	bounds              Bounds
 	foreground          Color
 	background          Color
@@ -19,7 +15,7 @@ type View struct {
 	mouseEventHandler   func(*MouseEvent)
 	keyEventHandler     func(*KeyEvent)
 	boundsUpdateHandler func(Bounds, Bounds)
-	drawHandler         func(Canvas, State)
+	drawHandler         func(Canvas)
 	viewportAccessor    func(Bounds) *Bounds
 }
 
@@ -141,7 +137,7 @@ func (v *View) redraw() {
 	}
 	c := makeCanvasWithViewPort(bounds, viewPort, v.foreground, v.background, v.attribute)
 	if v.drawHandler != nil {
-		v.drawHandler(c, v.state)
+		v.drawHandler(c)
 	}
 	for _, subv := range v.subViews {
 		subv.redraw()

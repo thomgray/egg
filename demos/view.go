@@ -36,12 +36,8 @@ func main() {
 	app.OnResizeEvent(handleResize)
 }
 
-func drawView(c egg.Canvas, state egg.State) {
-	switch state := state.(type) {
-	case string:
-		c.DrawString(state, 0, 0, c.Foreground, c.Background, c.Attribute)
-	}
-
+func drawView(c egg.Canvas) {
+	c.DrawString(labelStr, 0, 0, c.Foreground, c.Background, c.Attribute)
 }
 
 func handleResize(e *egg.ResizeEvent) {
@@ -59,7 +55,6 @@ func handleKey(e *egg.KeyEvent) {
 	} else {
 		log.Println("??????????")
 		labelStr += "!"
-		v.SetState(labelStr)
 		v.ReDraw()
 	}
 }

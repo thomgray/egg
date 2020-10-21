@@ -1,15 +1,5 @@
 package egg
 
-// SetState - set the view's state
-func (v *View) SetState(state State) {
-	v.state = state
-}
-
-// GetState - get the view's current state
-func (v *View) GetState() State {
-	return v.state
-}
-
 // SetID - set an id for the view
 // The view id is not used for anything internal, nor is there any requirement
 // for it to be unique. It is simply there in case you want to use it.
@@ -126,7 +116,7 @@ func (v *View) SetAttributes(atts ...Attribute) {
 }
 
 // OnDraw - specify a draw funtion
-func (v *View) OnDraw(f func(c Canvas, state State)) {
+func (v *View) OnDraw(f func(c Canvas)) {
 	v.drawHandler = f
 }
 

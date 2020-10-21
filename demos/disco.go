@@ -50,7 +50,7 @@ func main() {
 	})
 }
 
-func draw(c egg.Canvas, _ egg.State) {
+func draw(c egg.Canvas) {
 	w, h := egg.WindowSize()
 	diam := w
 	if diam > h {

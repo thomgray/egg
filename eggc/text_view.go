@@ -64,7 +64,7 @@ func (tv *TextView) SetCursorVisibleWhenUnfocused(v bool) {
 	tv.cursorVisible = v
 }
 
-func (tv *TextView) draw(c egg.Canvas, _ egg.State) {
+func (tv *TextView) draw(c egg.Canvas) {
 	// fmt.Printf("Drawing txt view")
 	curX := 0
 	curY := 0

@@ -11,6 +11,8 @@ import (
 
 func main() {
 	f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	var views []*ColorView
+
 	if err != nil {
 		panic(err)
 	}
@@ -19,17 +21,16 @@ func main() {
 	app := egg.InitOrPanic()
 
 	for i := 0; i < 500; i++ {
-		app.AddView(makeColorView(i))
+		cv := makeColorView(i)
+		views = append(views, cv)
+		app.AddView(cv.View)
 	}
 	defer app.Start()
 
 	app.OnResizeEvent(func(e *egg.ResizeEvent) {
-		for _, sv := range app.GetSubViews() {
-			switch ansi := sv.GetState().(type) {
-			case int:
-				bnds := boundsForI(ansi, e.Height)
-				sv.SetBounds(bnds)
-			}
+		for _, sv := range views {
+			bnds := boundsForI(sv.ansiCode, e.Height)
+			sv.SetBounds(bnds)
 		}
 		app.ReDraw()
 	})
@@ -44,19 +45,28 @@ func boundsForI(ansi, height int) egg.Bounds {
 	return egg.MakeBounds(x, y, 5, 2)
 }
 
-func makeColorView(ansi int) *egg.View {
+func makeColorView(ansi int) *ColorView {
 	h := egg.WindowHeight()
-	v := egg.MakeView()
+	v := ColorView{}.New(ansi)
 	bnds := boundsForI(ansi, h)
-	log.Printf("x=%d y=%d", bnds.X, bnds.Y)
 	v.SetBounds(bnds)
 	v.SetBackground(egg.ColorAnsi(ansi))
-	v.SetState(ansi)
-	v.OnDraw(func(c egg.Canvas, s egg.State) {
-		switch s := s.(type) {
-		case int:
-			c.DrawString2(fmt.Sprintf("%d", s), 0, 0)
-		}
+	v.OnDraw(func(c egg.Canvas) {
+		c.DrawString2(fmt.Sprintf("%d", v.ansiCode), 0, 0)
 	})
 	return v
+}
+
+type ColorView struct {
+	*egg.View
+	ansiCode int
+}
+
+func (cv ColorView) New(ansiCode int) *ColorView {
+	view := egg.MakeView()
+
+	cv.View = view
+	cv.ansiCode = ansiCode
+
+	return &cv
 }
