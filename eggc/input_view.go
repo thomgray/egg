@@ -51,9 +51,9 @@ func (iv *InputView) handleKeyEvent(e *egg.KeyEvent) {
 		}
 	case egg.KeyDelete:
 		iv.deleteUnderCursor()
-	case egg.KeyArrowLeft:
+	case egg.KeyLeft:
 		iv.moveCursorBackwards()
-	case egg.KeyArrowRight:
+	case egg.KeyRight:
 		iv.moveCursorForward()
 	case egg.KeyHome:
 		iv.moveCursorToBeginningOfLine()

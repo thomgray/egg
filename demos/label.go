@@ -61,16 +61,16 @@ func main() {
 		switch e.Key {
 		case egg.KeyEsc:
 			app.Stop()
-		case egg.KeyArrowLeft:
+		case egg.KeyLeft:
 			bounds.X--
 			bv.SetBounds(bounds)
-		case egg.KeyArrowRight:
+		case egg.KeyRight:
 			bounds.X++
 			bv.SetBounds(bounds)
-		case egg.KeyArrowUp:
+		case egg.KeyUp:
 			bounds.Y--
 			bv.SetBounds(bounds)
-		case egg.KeyArrowDown:
+		case egg.KeyDown:
 			bounds.Y++
 			bv.SetBounds(bounds)
 		}

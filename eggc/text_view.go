@@ -95,13 +95,13 @@ func (tv *TextView) keyEventHandler(e *egg.KeyEvent) {
 		}
 	case egg.KeyDelete:
 		tv.deleteUnderCursor()
-	case egg.KeyArrowDown:
+	case egg.KeyDown:
 		tv.moveCursorDown()
-	case egg.KeyArrowUp:
+	case egg.KeyUp:
 		tv.moveCursorUp()
-	case egg.KeyArrowLeft:
+	case egg.KeyLeft:
 		tv.moveCursorBackwards()
-	case egg.KeyArrowRight:
+	case egg.KeyRight:
 		tv.moveCursorForward()
 	case egg.KeyHome:
 		tv.moveCursorToBeginningOfLine()

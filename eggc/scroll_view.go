@@ -146,13 +146,13 @@ func (sv *ScrollView) drawVerticalScrollBar(c egg.Canvas, unionBounds egg.Bounds
 
 func (sv *ScrollView) keyHandler(ke *egg.KeyEvent) {
 	switch ke.Key {
-	case egg.KeyArrowLeft:
+	case egg.KeyLeft:
 		sv.ScrollLeft(1)
-	case egg.KeyArrowRight:
+	case egg.KeyRight:
 		sv.ScrollRight(1)
-	case egg.KeyArrowUp:
+	case egg.KeyUp:
 		sv.ScrollUp(1)
-	case egg.KeyArrowDown:
+	case egg.KeyDown:
 		sv.ScrollDown(1)
 	}
 }
@@ -163,13 +163,13 @@ func (sv *ScrollView) batchReceive(e []interface{}) {
 	for _, i := range e {
 		ke := i.(*egg.KeyEvent)
 		switch ke.Key {
-		case egg.KeyArrowLeft:
+		case egg.KeyLeft:
 			h--
-		case egg.KeyArrowRight:
+		case egg.KeyRight:
 			h++
-		case egg.KeyArrowUp:
+		case egg.KeyUp:
 			v++
-		case egg.KeyArrowDown:
+		case egg.KeyDown:
 			v--
 		}
 	}
