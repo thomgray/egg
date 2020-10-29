@@ -1,5 +1,7 @@
 package egg
 
+import "sort"
+
 // View - a component that represents a section of the application's viewport
 type View struct {
 	id                  string
@@ -17,6 +19,7 @@ type View struct {
 	boundsUpdateHandler func(Bounds, Bounds)
 	drawHandler         func(Canvas)
 	viewportAccessor    func(Bounds) *Bounds
+	zindex              int
 }
 
 // MakeView - make a new view.
@@ -139,6 +142,9 @@ func (v *View) redraw() {
 	if v.drawHandler != nil {
 		v.drawHandler(c)
 	}
+	sort.SliceStable(v.subViews, func(i, j int) bool {
+		return v.subViews[i].zindex < v.subViews[j].zindex
+	})
 	for _, subv := range v.subViews {
 		subv.redraw()
 	}

@@ -134,3 +134,13 @@ func (v *View) OnMouseEvent(f func(*MouseEvent)) {
 func (v *View) OnBoundsSet(f func(old, new Bounds)) {
 	v.boundsUpdateHandler = f
 }
+
+// SetZIndex - set the view's z-index
+func (v *View) SetZIndex(zindex int) {
+	v.zindex = zindex
+}
+
+// GetZIndex - get the view's z-index
+func (v *View) GetZIndex() int {
+	return v.zindex
+}
